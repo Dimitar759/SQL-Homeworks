@@ -1,60 +1,79 @@
-CREATE TABLE Students (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    DateOfBirth DATE,
-    EnrolledDate DATE,
-    Gender NVARCHAR(10),
-    NationalIDNumber NVARCHAR(50),
-    StudentCardNumber NVARCHAR(50)
-);
 
-CREATE TABLE Teachers (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    DateOfBirth DATE,
-    AcademicRank NVARCHAR(50),
-    HireDate DATE
-);
+USE [SEDC]
+GO
 
-SELECT * FROM Teachers;
+DROP TABLE IF EXISTS [dbo].[OrderDetails]
+DROP TABLE IF EXISTS [dbo].[Orders]
+DROP TABLE IF EXISTS [dbo].[BusinessEntities]
+DROP TABLE IF EXISTS [dbo].[Customers]
+DROP TABLE IF EXISTS [dbo].[Employees]
+DROP TABLE IF EXISTS [dbo].[Products]
+GO
 
-CREATE TABLE Grades (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    StudentID INT,
-    CourseID INT,
-    TeacherID INT,
-    Grade NVARCHAR(5),
-    Comment NVARCHAR(255),
-    CreatedDate DATE,
-    FOREIGN KEY (StudentID) REFERENCES Students(ID),
-    FOREIGN KEY (CourseID) REFERENCES Courses(ID),
-    FOREIGN KEY (TeacherID) REFERENCES Teachers(ID)
-);
+-- you can skip PKs in this class and introduce them when learning about constraints
 
-CREATE TABLE Courses (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(100) NOT NULL,
-    Credit INT,
-    AcademicYear NVARCHAR(50),
-    Semester NVARCHAR(50)
-);
+CREATE TABLE Customers (
+	[Id] int IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(100) NOT NULL,
+	[AccountNumber] nvarchar(100) NULL,
+	[City] nvarchar(100) NULL,
+	[RegionName] nvarchar(100) NULL,
+	[CustomerSize] nvarchar(10) NULL,
+	[PhoneNumber] nvarchar(20) NULL,
+	[IsActive] bit NOT NULL,
+CONSTRAINT [PK_Customers] PRIMARY KEY (Id)
+)
 
-CREATE TABLE AchievementTypes (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(50) NOT NULL,
-    Description NVARCHAR(255),
-    ParticipationRate DECIMAL(5,2)
-);
+CREATE TABLE Employees (
+	[Id] int IDENTITY(1,1) NOT NULL,
+	[FirstName] nvarchar(100) NOT NULL,
+	[LastName] nvarchar(100) NOT NULL,
+	[DateOfBirth] date NULL, 
+	[Gender] nchar(1) NULL, -- 'F' / 'M'
+	[HireDate] date NULL,
+	[NationalIdNumber] nvarchar(20) NULL
+CONSTRAINT [PK_Employees] PRIMARY KEY (Id)
+)
 
-CREATE TABLE GradeDetails (
-    ID INT PRIMARY KEY IDENTITY(1,1),
-    GradeID INT,
-    AchievementTypeID INT,
-    AchievementPoints DECIMAL(5,2),
-    AchievementMaxPoints DECIMAL(5,2),
-    AchievementDate DATE,
-    FOREIGN KEY (GradeID) REFERENCES Grades(ID),
-    FOREIGN KEY (AchievementTypeID) REFERENCES AchievementTypes(ID)
-);
+CREATE TABLE Products (
+	[Id] int IDENTITY(1,1) NOT NULL,
+	[Code] nvarchar(50) NULL,
+	[Name] nvarchar(100) NULL,
+	[Description] nvarchar(max) NULL,
+	[Weight] decimal(18, 2) NULL,
+	[Price] decimal(18,2) NULL,
+	[Cost] decimal(18,2) NULL,
+CONSTRAINT [PK_Products] PRIMARY KEY (Id)
+)
+
+
+CREATE TABLE Orders(
+	[Id] bigint IDENTITY(1,1) NOT NULL,
+	[OrderDate] date NULL,
+	[Status] smallint NULL,
+	[BusinessEntityId] int NULL,
+	[CustomerId] int NULL,
+	[EmployeeId] int NULL,
+	[TotalPrice] decimal(18,2) NULL,
+	[Comment] nvarchar(max) NULL
+CONSTRAINT [PK_Orders] PRIMARY KEY (Id)
+)
+
+CREATE TABLE OrderDetails(
+	[Id] int IDENTITY(1,1) NOT NULL,
+	[OrderId] bigint NULL,
+	[ProductId] int NULL,
+	[Quantity] int NULL,
+	[Price] decimal(18,2) NULL,
+CONSTRAINT [PK_OrderDetails] PRIMARY KEY (Id)
+)
+
+CREATE TABLE BusinessEntities(
+	[Id] int IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(100) NULL,
+	[Region] nvarchar(1000) NULL,
+	[Zipcode] nvarchar(10) NULL,
+	[Size] nvarchar(10) NULL,
+CONSTRAINT [PK_BusinessEntities] PRIMARY KEY (Id)
+)
+GO
