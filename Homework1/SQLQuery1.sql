@@ -10,8 +10,6 @@ DROP TABLE IF EXISTS [dbo].[Employees]
 DROP TABLE IF EXISTS [dbo].[Products]
 GO
 
--- you can skip PKs in this class and introduce them when learning about constraints
-
 CREATE TABLE Customers (
 	[Id] int IDENTITY(1,1) NOT NULL,
 	[Name] nvarchar(100) NOT NULL,
